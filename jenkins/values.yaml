@@ -1,11 +1,10 @@
 replicaCount: 1
 
 image:
-  repository: jenkins
-  tag: latest
+  repository: jenkins/jenkins
+  tag: lts-jdk17
   pullPolicy: IfNotPresent
 
-service:  # Changed this to lowercase
+service:
   type: NodePort
   port: 8080
-
