@@ -1,12 +1,10 @@
-repilcaCount: 1
+replicaCount: 1
 
 image:
-  repostory: sonarqube
+  repository: sonarqube
   tag: enterprise
   pullPolicy: IfNotPresent
 
 service:
   type: NodePort
   port: 9000
-  
-
