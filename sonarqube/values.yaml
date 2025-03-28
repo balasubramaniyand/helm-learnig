@@ -1,0 +1,12 @@
+repilcaCount: 1
+
+image:
+  repostory: sonarqube
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 9000
+  
+
