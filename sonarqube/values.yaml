@@ -2,7 +2,7 @@ repilcaCount: 1
 
 image:
   repostory: sonarqube
-  tag: latest
+  tag: enterprise
   pullPolicy: IfNotPresent
 
 service:
