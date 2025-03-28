@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{Relase.Name }}-nginx
+  name: {{ .Release.Name }}-nginx
 spec:
-  type: {{Vaules.service.type }}
+  type: {{ .Values.service.type }}
   selector:
-  app: nginx
+    app: nginx
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 80
-
