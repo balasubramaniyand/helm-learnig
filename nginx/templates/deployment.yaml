@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Relase.Name }}--nginx
+  name: {{ .Release.Name }}--nginx
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -17,4 +17,3 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: 80
-
