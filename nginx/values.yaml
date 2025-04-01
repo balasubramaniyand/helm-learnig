@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: nginx
-  tag: 1.80
+  tag: 1.26
   pullPolicy: IfNotPresent
 
 service:  # Changed this to lowercase
