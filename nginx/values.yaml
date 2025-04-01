@@ -9,3 +9,9 @@ service:  # Changed this to lowercase
   type: NodePort
   port: 80
 
+  pvc:
+  name: my-pvc
+  accessModes:
+    - ReadWriteOnce
+  storage: 1Gi
+
