@@ -1,0 +1,246 @@
+pod :
+
+https://kodekloud.com/pages/free-labs/kubernetes/pods-stable?utm_source=courses&utm_medium=course_page&utm_campaign=free_labs_promotion&utm_content=CKA%20Certification%20Course%20%E2%80%93%20Certified%20Kubernetes%20Administrator_course
+how to run the pod
+ kubectl run nginx --image=nginx
+ kubectl get pods
+ kubectl describe pod pod--name
+ kubectl get pods -o wide
+ kubectl delete pod pod --name
+ 
+ pod.yaml
+ ===
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+spec:
+  containers:
+  - name: redis
+    image: redis123
+    ports:
+    - containerPort: 6379
+      Nodeport: 30081
+    =====
+ kubectl create -f pod.yaml
+ kubeclt recreate -f pod.yaml
+ 
+ 
+ already pod is running change the image 
+  kubectl edit pod redis 
+  kubectl apply -f pod.yaml
+  
+  ======================================================================================================================================================
+  replica set command :
+  
+  kubectl get replicaset
+  kubectl describe replicaset new-replica-set
+  kubectl describe pod new-pod-123
+  kubectl explain replicaset
+  
+  replicaset.yaml
+  ====
+  apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
+=======
+  
+kubectl delete rs replicaset-1
+how to edit running the replicaset
+kubectl edit rs new-replicaset-2
+kubectl describe rs
+kubectl get rs
+kubectl scale  rs new-replicaset-1 --replica=5
+kubectl edit rs new-replicaset-1 
+
+====================================================================================================================================================
+
+
+
+Deployment :
+
+deployment.yaml
+====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+===
+kubectl create -f deployments.yaml
+kubectl get deployments
+kubectl get rs
+kubectl get pods
+kubectl get all --you see the all pod and deployments and rs and namespace
+kubectl run nginx --image=nginx
+kubectl run nginx --image=nginx --dry-run=client -o yaml
+kubectl create deployment --image=nginx nginx
+kubectl create deployment --image=nginx nginx --dry-run=client -o yaml
+kubectl create deployment --image=nginx nginx --dry-run=client -o yaml > nginx-deployment.yaml
+kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > nginx-deployment.yaml
+kubectl deployment --help
+kubectl create deployment httpd --image=http:latest --replicaset=3 
+
+============================================================================================================================================================================================
+
+Services:
+type:
+1.loadbalancer --- outside coommuincation
+2.clusterip --- inside the cluster 
+2.Nodeport --- assigen server need target port (port 300000 to 32767)
+
+
+Nodeport.yaml
+============
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 9376
+communication the service to pod to node
+  selector:
+    app: nginx
+    type: frontend
+
+      
+ =======================
+ Cluster ip:
+ clusterip.yaml
+=======
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: Clusterip
+  ports:
+    - targetPort: 80
+      Port: 80
+communication the service to pod to pod 
+  selector:
+    app: nginx
+    type: frontend
+=========================================================================
+
+Loadbalance:
+loadbalances.yaml
+============
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: Loadbalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 9376
+pod communication to the outside world
+  selector:
+    app: nginx
+    type: frontend
+
+=============================================================
+kubectl get svc
+kubectl describe svc service
+
+
+========================================================================================================================================================================================================
+Namespace:
+default namespace kunernetes:
+1.default
+2.kubesystem
+3.kubepublic
+
+we connect pod one namespace another that time define namespace service 
+
+ex:
+mysql.connect("db.service.dev.svc.cluster.local")
+mysql.connect("db.service")
+cluster.local default domain name kubernetes
+
+kubctl get  pods --namespace=kube-system
+kubectl create -f pod.yaml --namespace=dev
+kubectl create namespace dev
+Namespace.yaml:
+=================
+
+apiVersion: v1
+kind: NameSpace
+metadata:
+  name: dev
+
+
+example
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  namespace: dev      ---> pod deploying dev namespace
+spec:
+  containers:
+  - name: redis
+    image: redis123
+    ports:
+    - containerPort: 6379
+      Nodeport: 30081
+
+
+=========================
+
+set the prepament namespace
+kubectl config set-context $(kubectl config current-context) --namespace=dev
+kubect get all--namespaces
+
+
+====================================================================================================================================================================================
+
+
+
+
+
+
+
+
+
+
