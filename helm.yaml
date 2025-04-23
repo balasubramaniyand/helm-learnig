@@ -1,0 +1,104 @@
+helm history bala
+helm create bala 
+helm install bala bala
+helm upgrade bala
+helm list --a
+helm uninstall bala
+
+
+kubectl get node -o wide
+kubectl get pod
+kubectl get all
+kubectl get svc
+kubectl describe pod -o wide
+kubectl get namespace
+kubectl get pods --all-namespaces
+kubectl create bala
+kubectl delete all --all -n bala
+
+
+installating agro-cd
+kubectl apply -n bala -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl get secret -n bala argocd-initial-admin-secret -o yaml
+echo "WUF3ckJqeFFWZ01UZjdyag==" | base64 --decode
+
+
+sudo lsof -i :8080
+
+https://www.fosstechnix.com/deploy-application-on-minikube-using-argocd-ui/#google_vignette
+
+helm install my-release oci://registry-1.docker.io/bitnamicharts/nginx
+
+kubectl get svc my-release-nginx
+
+helm repo adding:
+
+helm repo add bala https://charts.bitnami.com/bitnami
+https://www.fosstechnix.com/
+
+helm search repo bala
+helm pull bala/superset
+sudo helm pull bala/apache --destination test
+helm template bala  ---> getting yaml file format
+helm show chart  bala/nginx  ---> view the yaml.files
+helm install my-nginx bitnami/nginx
+ex: helm install testbala bala/nginx
+https://dev.to/idsulik/using-helm-repositories-b3j   ---> blog learning
+
+changing minikube path :
+export MINIKUBE_HOME=/home/balasubramaniyan.d/bala/minikube
+
+echo 'export MINIKUBE_HOME=/home/balasubramaniyan.d/bala/minikube' >>~/.bashrc
+echo 'export MINIKUBE_HOME=/new/path' >> ~/.bashrc
+
+kubectl delete all --all -n bala
+kubectl config set-context --current --namespace=default
+https://www.fosstechnix.com/devops/argocd/
+kubectl get all -n argocd ---> we get all in the namesapce
+
+port forward 
+kubectl port-forward svc/guestbook-helm-guestbook --address 0.0.0.0 8001:80 &
+kubectl port-forward svc/my-release-nginx 8080:80 &
+kubectl port-forward svc/argocd-server -n bala --address 0.0.0.0 8080:443 &
+kubectl port-forward svc/argocd-server -n bala 8082:443 &
+
+
+switch to minikube to kubernetes
+kubectl config use-context devops-context
+
+
+
+kubectl get svc --namespace default -w
+kubectl config current-context
+
+minikube setup way argo-cd
+https://www.fosstechnix.com/install-argocd-on-minikube-with-ubuntu-24-04/#google_vignette
+
+
+git hub access token
+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
+
+echo "# helm-k8s" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M master
+git remote add origin https://github.com/balasubramaniyand/helm-k8s.git
+git push -u origin master
+
+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
+
+ssh key gerenteating
+
+
+ssh-keygen -t rsa -b 4096 -C "balasubramaniyand" -f /home/balasubramaniyan.d/git/id_rsa
+clip < ~/home/balasubramaniyan.d/git/id_rsa.pub
+
+
+
+
+3YEYxpcG7-GUTN7H
+
+3YEYxpcG7-GUTN7H
+
+3YEYxpcG7-GUTN7H
