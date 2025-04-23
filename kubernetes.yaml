@@ -236,7 +236,652 @@ kubect get all--namespaces
 ====================================================================================================================================================================================
 
 
+pod :
 
+https://kodekloud.com/pages/free-labs/kubernetes/pods-stable?utm_source=courses&utm_medium=course_page&utm_campaign=free_labs_promotion&utm_content=CKA%20Certification%20Course%20%E2%80%93%20Certified%20Kubernetes%20Administrator_course
+how to run the pod
+ kubectl run nginx --image=nginx
+ kubectl get pods
+ kubectl describe pod pod--name
+ kubectl get pods -o wide
+ kubectl delete pod pod --name
+ 
+ pod.yaml
+ ===
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+spec:
+  containers:
+  - name: redis
+    image: redis123
+    ports:
+    - containerPort: 6379
+      Nodeport: 30081
+    =====
+ kubectl create -f pod.yaml
+ kubeclt recreate -f pod.yaml
+ 
+ 
+ already pod is running change the image 
+  kubectl edit pod redis 
+  kubectl apply -f pod.yaml
+  
+  ======================================================================================================================================================
+  replica set command :
+  
+  kubectl get replicaset
+  kubectl describe replicaset new-replica-set
+  kubectl describe pod new-pod-123
+  kubectl explain replicaset
+  
+  replicaset.yaml
+  ====
+  apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
+=======
+  
+kubectl delete rs replicaset-1
+how to edit running the replicaset
+kubectl edit rs new-replicaset-2
+kubectl describe rs
+kubectl get rs
+kubectl scale  rs new-replicaset-1 --replica=5
+kubectl edit rs new-replicaset-1 
+
+====================================================================================================================================================
+
+
+
+Deployment :
+
+deployment.yaml
+====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+===
+kubectl create -f deployments.yaml
+kubectl get deployments
+kubectl get rs
+kubectl get pods
+kubectl get all --you see the all pod and deployments and rs and namespace
+kubectl run nginx --image=nginx
+kubectl run nginx --image=nginx --dry-run=client -o yaml
+kubectl create deployment --image=nginx nginx
+kubectl create deployment --image=nginx nginx --dry-run=client -o yaml
+kubectl create deployment --image=nginx nginx --dry-run=client -o yaml > nginx-deployment.yaml
+kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > nginx-deployment.yaml
+kubectl deployment --help
+kubectl create deployment httpd --image=http:latest --replicaset=3 
+
+============================================================================================================================================================================================
+
+Services:
+type:
+1.loadbalancer --- outside coommuincation
+2.clusterip --- inside the cluster 
+2.Nodeport --- assigen server need target port (port 300000 to 32767)
+
+
+Nodeport.yaml
+============
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 9376
+communication the service to pod to node
+  selector:
+    app: nginx
+    type: frontend
+
+      
+ =======================
+ Cluster ip:
+ clusterip.yaml
+=======
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: Clusterip
+  ports:
+    - targetPort: 80
+      Port: 80
+communication the service to pod to pod 
+  selector:
+    app: nginx
+    type: frontend
+=========================================================================
+
+Loadbalance:
+loadbalances.yaml
+============
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: Loadbalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 9376
+pod communication to the outside world
+  selector:
+    app: nginx
+    type: frontend
+
+=============================================================
+kubectl get svc
+kubectl describe svc service
+
+
+========================================================================================================================================================================================================
+Namespace:
+default namespace kunernetes:
+1.default
+2.kubesystem
+3.kubepublic
+
+we connect pod one namespace another that time define namespace service 
+
+ex:
+mysql.connect("db.service.dev.svc.cluster.local")
+mysql.connect("db.service")
+cluster.local default domain name kubernetes
+
+kubctl get  pods --namespace=kube-system
+kubectl create -f pod.yaml --namespace=dev
+kubectl create namespace dev
+Namespace.yaml:
+=================
+
+apiVersion: v1
+kind: NameSpace
+metadata:
+  name: dev
+
+
+example
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  namespace: dev      ---> pod deploying dev namespace
+spec:
+  containers:
+  - name: redis
+    image: redis123
+    ports:
+    - containerPort: 6379
+      Nodeport: 30081
+
+
+=========================
+
+set the prepament namespace
+kubectl config set-context $(kubectl config current-context) --namespace=dev
+kubect get all--namespaces
+kubectl get ns 
+kubectl get -n bala
+kubectl get pods -A
+kubectl get svc -n bala
+
+
+====================================================================================================================================================================================
+
+kubernetes expose deployment nginx --port 80
+kubernetes replace -f nginx.yaml
+kubernetes delete -f nginx.yaml
+kubernetes apply -f nginx.yaml
+kubernetes replace --force -f nginx.yaml
+
+
+
+
+
+=============================================================================
+declaretive command and impreative command 
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#create
+kubectl run nginx-pod --image=nginx
+how to set label
+kubectl run nginx --image=nginx:latest --label="bala:dev"
+kubectl expose pod redis --port 6379--name redis-service
+kubectl run nginx --image=nginx --port=80 --expose=true this creating cluster ip 
+
+================================================================================================================
+Manual scheduling :
+manual scheduling.yaml
+============
+apiVersion:v1
+kind:pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  nodename: node1
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+      - containerPort: 9000
+      
+======================================
+labels and selectores:
+Labels in Kubernetes are key-value pairs attached to resources (e.g., app: my-app) for organization. Selectors match labels to associate resources, such as linking a Service to specific Pods using selector: app: my-app.
+this standard method togroup things together
+kubectl get pod ---selector app=app1
+
+label.yaml:
+==============
+
+apiVersion:v1
+kind:pod
+metadata:
+   name:my-pod
+   labels:
+     app: my-app
+ spec:
+   container:
+     name: nginx-container
+     image: nginx
+     
+=================================================
+label and selector.yaml
+======================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: labeled-deployment
+  labels:
+    app: my-app
+    environment: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+        environment: production
+    spec:
+      containers:
+      - name: my-app-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        
+servicewith label and selector.yaml
+=================================
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+  
+  
+  kubetctl get pods --selector env=dev
+  kubectl get pods --selector env=dev  | wc -l   ---> with headers
+  kuectl get pods --selector env=dev --no-headers | wc -l   ---> with out headers
+  kubectl get all --selector env=dev 
+  kubectl get all --selector env=dev,env=pord,env=test  ---> adding comma you also see another selector pod its visible
+  
+
+=======================================================
+
+annotations:
+metadata under define annotations in the yaml file.
+ in kubernetes are used to store non-identifying metadata for objects, typically consumed by tools or systems, not by kubernetes is self
+ annotations storeing software version and contact persona of the pod and mentioning the deployment version
+ 
+ 
+ annotations.yaml
+ =====================
+ apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-pod
+  annotations:
+    description: "This pod runs a sample application."
+    owner: "AdminUser"
+    environment: "development"
+spec:
+  containers:
+  - name: sample-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+=================================================================================================================================================================
+taint and toleration:
+what pod can be sechuduled on a node.
+Taints: Rules that block certain pods from running on specific nodes.
+Tolerations: Permissions added to pods to allow them to bypass the taints and run on those nodes.
+To create a Kubernetes pod that tolerates a specific taint and ensures the pod is deployed only on tainted nodes,
+taint node:
+kubetcl taint nodes node-name key=value:taint-effect
+1. No sechedule
+2.perfernosechedule
+3.No exeute
+Toleration on the pod:
+kubectl tain node node1 app= dev:NoSchedule
+pod.yaml
+=======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tolerant-pod
+spec:
+  tolerations:
+  - key: "example-key"
+    operator: "Equal"
+    value: "example-value"
+    effect: "NoSchedule"
+  containers:
+  - name: my-container
+    image: nginx
+This Pod has a toleration for nodes that have a taint with key "example-key" and value "example-value", with the effect "NoSchedule".
+======================================================
+kubectl describe node kubemaster | grep Taint
+kubetcl get nodes
+kubectl describe node node1
+kubectl taint --help
+key=bala
+value=love
+effect=Noschedule
+kubectl taint node node1 bala=love:Noschedule
+kubectl taint node node1
+kubectlrun bala --image=nginx
+kubectl run ragu --image=nginx --dry-run=clinet -o yaml 
+kubectl run ragu --image=nginx --dry-run=clinet -o yaml > ragu.yaml
+deleting node to the taint:
+kubetcl taint node controlplane node-role.kubernetes.io/master-Noschedule- --> deleting taint
+
+==================================================================================================================================================================================
+Node selector:
+A node selector in Kubernetes is a way to constrain pods to run only on specific nodes based on labels. It helps you control where workloads are scheduled.
+How It Works:
+
+    Nodes in a cluster have labels (key-value pairs) that describe characteristics like region, hardware type, or environment.
+
+    The node selector in a pod specification ensures the pod runs only on nodes with matching labels.
+nodeselector.yaml
+================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  nodeSelector:
+    environment: production
+  containers:
+  - name: my-container
+    image: nginx
+This pod will only be scheduled on nodes with the label environment=production.
+kubectl label nodes <node-name> environment=production
+how to create labels in node:
+kubectl label node <node-name> <label-key>=<label-value>
+kubectl label node node-1 size=large
+
+example:
+===========
+apiVersion: v1
+kind: pod
+metadat:
+  name : my-pod
+ spec:
+   containers:
+   - name: web
+     image: nginx
+   nodeSelector:
+       size:large
+       
+kubectl create -f pod.yaml
+Node Selector -limitations
+1. large 
+2. medium
+3. low
+======================================================================================================
+Node affinity:
+Node affinity in Kubernetes is an advanced way to control pod scheduling by specifying rules about which nodes a pod should or must run on. It’s more flexible than nodeSelector and allows for complex scheduling logic.
+How Node Affinity Works
+
+    Uses conditions based on node labels.
+
+    Defines soft (preferredDuringSchedulingIgnoredDuringExecution) and hard (requiredDuringSchedulingIgnoredDuringExecution) constraints.
+
+    Supports operators like In, NotIn, Exists, etc.
+    
+Key Differences
+Operator	Behavior
+In	Pod runs only on nodes with matching labels.
+NotIn	Pod avoids nodes with certain labels.
+
+affinity.yaml:
+===============
+apiVersion: v1
+kind: Pod
+metadata:
+  name: in-affinity-pod
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: environment
+            operator: In
+            values:
+            - production
+            - staging
+  containers:
+  - name: my-container
+    image: nginx
+================================
+Used in scheduling rules to define where a pod can or cannot run:
+
+    In → Specifies values that a node must match.
+
+    NotIn → Specifies values that a node must not match.
+
+    Exists → Requires a node to have a specific label key.
+
+    DoesNotExist → Ensures the node does not have a specific label key.
+    1.Required Node Affinity (requiredDuringSchedulingIgnoredDuringExecution)
+
+    Enforces strict rules for scheduling.
+    example:
+    affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: environment
+          operator: In
+          values:
+          - production
+
+
+    If a node does not match the affinity conditions, the pod will not be scheduled.
+    2.Preferred Node Affinity (preferredDuringSchedulingIgnoredDuringExecution)
+
+    Defines soft constraints, meaning Kubernetes tries to schedule the pod on preferred nodes but will still schedule it elsewhere if needed.
+    example:
+    affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: region
+          operator: In
+          values:
+          - us-east
+          
+   Required:	Pods must match the node affinity rule, or they won’t be scheduled.
+   Preferred: 	Pods prefer matching nodes, but can be scheduled elsewhere if necessary.
+   
+   commands:
+   1.kubectl describe node node1
+   2.kubectl label --help
+   3.kubectl label node node1 color=blue
+   4.kubectl create deployments bala --image=nginx --replicaset=3
+   5.kubectl describe node node-1 | grep Taints
+   6.kubectl edit deployment bala
+   7.kubectl create deployment ragu --image=nginx --replicaset=2 --dry-run=clinet -o yaml
+   8.kubectl create deployment ragu --image=nginx --replicaset=2 --dry-run=clinet -o yaml > ragu.yaml
+ ============================================
+ differnetencs taintand toleration vs node affinity:
+ Feature	Taints & Tolerations	Node Affinity
+Applies to	Nodes (taints), Pods (tolerations)	Pods only
+Purpose	Restrict scheduling on certain nodes	Guide scheduling to preferred or required nodes
+Behavior	Repels pods unless tolerated	Attracts pods to preferred nodes but doesn’t repel
+Strict vs Soft	Always enforced (unless tolerated)	Can be strict (required) or soft (preferred)
+
+
+==========================================================================================
+Resource limit:
+
+example:
+====
+apiVersion: v1
+kind: Pod
+metadata:
+  name: request-only-pod
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+        
+Requests define the minimum resources needed for scheduling:
+
+    memory: "128Mi" → Pod requests 128MB of RAM.
+    
+requestandlimit.yaml
+======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: resource-managed-pod
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "1000m"
+    Requests → The minimum resources the pod needs to start:
+
+        Memory: 128Mi (128 Megabytes)
+
+        CPU: 250m (250 millicores, or 0.25 of a core)
+
+    Limits → The maximum resources the pod can use:
+
+        Memory: 512Mi (512 Megabytes)
+
+        CPU: 1000m (1 core)
+
+If the pod exceeds its memory limit, Kubernetes may terminate it. If it exceeds CPU limits, Kubernetes will throttle its CPU usage to prevent overload.
+
+    cpu: "250m" → Pod requests 250 millicores of CPU (0.25 of a core).
+Resource Quota:
+===========
+ This defines a quota for CPU, memory, and the number of pods within a namespace:
+ 
+ example:
+ apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: namespace-quota
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "4"
+    requests.memory: "8Gi"
+    limits.cpu: "10"
+    limits.memory: "16Gi"
+ex:
+pods: "10" → Limits the namespace to 10 pods.
+
+requests.cpu: "4" → Total requested CPU across all pods cannot exceed 4 cores.
+
+requests.memory: "8Gi" → Total requested memory across all pods cannot exceed 8GB.
+
+limits.cpu: "10" → Combined CPU limit across all pods cannot exceed 10 cores.
+command:
+1.kubectl apply -f resource-quota.yaml --namespace=my-namespace
+2.kubectl delete pod bala
+3.kubectl edit pod ragu
+4.kubectl replace --force -f file name 
+5
+6.
+
+
+limits.memory: "16Gi" → Combined memory limit across all pods cannot exceed 16GB.
 
 
 
