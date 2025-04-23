@@ -1,0 +1,11 @@
+installing haproxy:
+setup for ubuntu server:
+
+https://haproxy.debian.net/#distribution=Ubuntu&release=jammy&version=2.4
+ apt-get update
+ apt-get install haproxy=2.4.\*
+ 
+ https://phoenixnap.com/kb/haproxy-load-balancer
+ 
+ https://medium.com/@sujitthombare01/haproxy-smart-way-for-load-balancing-in-kubernetes-c2337f61d90b   setuping haproxy
+ 
